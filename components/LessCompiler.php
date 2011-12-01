@@ -6,7 +6,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  */
 
-Yii::setPathOfAlias('Less', dirname(__FILE__).'/vendors/lessphp/lib/Less');
+Yii::setPathOfAlias('Less', dirname(__FILE__).'/../vendors/lessphp/lib/Less');
 class LessCompiler extends CApplicationComponent
 {
 	/**
