@@ -7,7 +7,7 @@
  */
 
 Yii::setPathOfAlias('Less', dirname(__FILE__).'/../vendors/lessphp/lib/Less');
-class LessCompiler extends CApplicationComponent
+class LessCompiler extends CBehavior
 {
 	/**
 	 * @var string the base path.
@@ -21,6 +21,9 @@ class LessCompiler extends CApplicationComponent
 	 * @var boolean whether to automatically compile files.
 	 */
 	public $autoCompile = false;
+
+	protected $_parser;
+
 	/**
 	 * Declares events and the corresponding event handler methods.
 	 * @return array events (array keys) and the corresponding event handler methods (array values).
