@@ -21,6 +21,14 @@ class LessCompiler extends CBehavior
 	 * @var boolean whether to automatically compile files.
 	 */
 	public $autoCompile = false;
+	/**
+	 * @var boolean compiler debug mode.
+	 */
+	public $debug = false;
+	/**
+	 * @var boolean whether to compress css or not.
+	 */
+	public $compress = false;
 
 	protected $_parser;
 
@@ -47,7 +55,12 @@ class LessCompiler extends CBehavior
 		if (!file_exists($this->basePath))
 			throw new CException(__CLASS__.': '.Yii::t('less','Failed to initialize compiler. Base path does not exist!'));
 
-		$this->_parser = new \Less\Parser();
+		$env = new \Less\Environment();
+
+		$env->setDebug($this->debug);
+		$env->setCompress($this->compress);
+
+		$this->_parser = new \Less\Parser($env);
 
 		if ($this->autoCompile && $this->hasChanges())
 			$this->compile();
