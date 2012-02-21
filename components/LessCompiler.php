@@ -26,8 +26,16 @@ class LessCompiler extends CApplicationComponent
 	 * @return array events (array keys) and the corresponding event handler methods (array values).
 	 */
 	public function events()
+	{
+		return array(
+			'onBeginRequest'=>'beginRequest',
+		);
+	}
+
+	/**
 	 * Actions to take before doing the request.
 	 * @throws CException if the base path does not exist
+	 */
 	public function beginRequest()
 	{
 		if ($this->basePath === null)
@@ -38,7 +46,7 @@ class LessCompiler extends CApplicationComponent
 
 		$this->_parser = new \Less\Parser();
 
-		if ($this->autoCompile && $this->hasChanged())
+		if ($this->autoCompile && $this->hasChanges())
 			$this->compile();
 	}
 
@@ -82,13 +90,11 @@ class LessCompiler extends CApplicationComponent
 		return $css;
 	}
 
-	}
-
 	/**
 	 * Returns whether any of files configured to be compiled has changed.
 	 * @return boolean the result
 	 */
-	public function hasChanges()
+	protected function hasChanges()
 	{
 		$dirs = array();
 		foreach ($this->paths as $source => $destination)
@@ -155,6 +161,4 @@ class LessCompiler extends CApplicationComponent
 			}
 		}
 	}
-}
-
 }
