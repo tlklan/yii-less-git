@@ -29,6 +29,14 @@ class LessCompiler extends CApplicationComponent
 	 * @var boolean whether to compress css or not.
 	 */
 	public $compress = false;
+	/**
+	 * @var boolean compiler debug mode.
+	 */
+	public $debug = false;
+	/**
+	 * @var boolean whether to compress css or not.
+	 */
+	public $compress = false;
 
 	protected $_parser;
 
@@ -46,6 +54,7 @@ class LessCompiler extends CApplicationComponent
 		$env = new \Less\Environment();
 		$env->setDebug($this->debug);
 		$env->setCompress($this->compress);
+		$this->_parser = new \Less\Parser($env);
 
 		$this->_parser = new \Less\Parser($env);
 
