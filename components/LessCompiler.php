@@ -6,8 +6,8 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  */
 
-Yii::setPathOfAlias('Less', dirname(__FILE__).'/../vendors/lessphp/lib/Less');
-class LessCompiler extends CBehavior
+Yii::setPathOfAlias('Less', dirname(__FILE__).'/../lib/lessphp/lib/Less');
+class LessCompiler extends CApplicationComponent
 {
 	/**
 	 * @var string the base path.
@@ -21,25 +21,21 @@ class LessCompiler extends CBehavior
 	 * @var boolean whether to automatically compile files.
 	 */
 	public $autoCompile = false;
+	/**
+	 * @var boolean compiler debug mode.
+	 */
+	public $debug = false;
+	/**
+	 * @var boolean whether to compress css or not.
+	 */
+	public $compress = false;
 
 	protected $_parser;
 
 	/**
-	 * Declares events and the corresponding event handler methods.
-	 * @return array events (array keys) and the corresponding event handler methods (array values).
+	 * Initializes the component.
 	 */
-	public function events()
-	{
-		return array(
-			'onBeginRequest'=>'beginRequest',
-		);
-	}
-
-	/**
-	 * Actions to take before doing the request.
-	 * @throws CException if the base path does not exist
-	 */
-	public function beginRequest()
+	public function init()
 	{
 		if ($this->basePath === null)
 			$this->basePath = Yii::getPathOfAlias('webroot');
@@ -47,9 +43,14 @@ class LessCompiler extends CBehavior
 		if (!file_exists($this->basePath))
 			throw new CException(__CLASS__.': '.Yii::t('less','Failed to initialize compiler. Base path does not exist!'));
 
-		$this->_parser = new \Less\Parser();
+		$env = new \Less\Environment();
+		$env->setDebug($this->debug);
+		$env->setCompress($this->compress);
 
-		if ($this->autoCompile && $this->hasChanges())
+		$this->_parser = new \Less\Parser($env);
+
+        // todo: fix whatever is wrong with hasChanges().
+		if ($this->autoCompile/* && $this->hasChanges()*/)
 			$this->compile();
 	}
 
@@ -61,11 +62,11 @@ class LessCompiler extends CBehavior
 	{
 		foreach ($this->paths as $lessPath => $cssPath)
 		{
-			$toPath = $this->basePath.'/'.$cssPath;
 			$fromPath = $this->basePath.'/'.$lessPath;
+			$toPath = $this->basePath.'/'.$cssPath;
 
 			if (file_exists($fromPath))
-				file_put_contents($toPath,$this->parse($fromPath));
+				file_put_contents($toPath, $this->parse($fromPath));
 			else
 				throw new CException(__CLASS__.': '.Yii::t('less','Failed to compile less file. Source path does not exist!'));
 
