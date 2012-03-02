@@ -29,14 +29,6 @@ class LessCompiler extends CApplicationComponent
 	 * @var boolean whether to compress css or not.
 	 */
 	public $compress = false;
-	/**
-	 * @var boolean compiler debug mode.
-	 */
-	public $debug = false;
-	/**
-	 * @var boolean whether to compress css or not.
-	 */
-	public $compress = false;
 
 	protected $_parser;
 
