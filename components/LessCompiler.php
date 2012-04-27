@@ -51,7 +51,7 @@ class LessCompiler extends CApplicationComponent
 		$this->_parser = new \Less\Parser($env);
 
         // todo: fix whatever is wrong with hasChanges().
-		if ($this->autoCompile/* && $this->hasChanges()*/)
+		if ($this->autoCompile && $this->hasChanges())
 			$this->compile();
 	}
 
