@@ -32,6 +32,7 @@
  *    - compiling: lessc::compileBlock()
  *
  */
+#[AllowDynamicProperties]
 class lessc {
 	public static $VERSION = "v0.3.4-2";
 	protected $buffer;
