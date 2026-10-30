@@ -687,7 +687,7 @@ class lessc {
 			$num = hexdec($num);
 			foreach (array(3,2,1) as $i) {
 				$t = $num % $width;
-				$num /= $width;
+				$num = intdiv($num, $width);
 
 				$color[$i] = $t * (256/$width) + $t * floor(16/$width);
 			}
@@ -1427,6 +1427,8 @@ class lessc {
 	 * Will not work on non reduced values (expressions, variables, etc)
 	 */
 	function compileValue($value) {
+		if ($value === null) return ''; // undefined variable
+
 		switch ($value[0]) {
 		case 'list':
 			// [1] - delimiter
@@ -1443,7 +1445,7 @@ class lessc {
 			
 			// search for inline variables to replace
 			$replace = array();
-			if (preg_match_all('/'.$this->preg_quote($this->vPrefix).'\{([\w-_][0-9\w-_]*)\}/', $value[1], $m)) {
+			if (preg_match_all('/'.$this->preg_quote($this->vPrefix).'\{([\w-][\w-]*)\}/', $value[1], $m)) {
 				foreach ($m[1] as $name) {
 					if (!isset($replace[$name]))
 						$replace[$name] = $this->compileValue($this->reduce(array('variable', $this->vPrefix . $name)));
@@ -1902,6 +1904,8 @@ class lessc {
 	// reduce a delayed type to its final value
 	// dereference variables and solve equations
 	function reduce($var) {
+		if ($var === null) return null; // undefined variable
+
 		// this is done here for infinite loop checking
 		if ($var[0] == "variable") {
 			$key = is_array($var[1]) ?
@@ -2247,7 +2251,7 @@ class lessc {
 	// try to match something on head of buffer
 	function match($regex, &$out, $eatWhitespace = true) {
 		$r = '/'.$regex.($eatWhitespace ? '\s*' : '').'/Ais';
-		if (preg_match($r, $this->buffer, $out, null, $this->count)) {
+		if (preg_match($r, $this->buffer, $out, 0, $this->count)) {
 			$this->count += strlen($out[0]);
 			return true;
 		}
@@ -2257,7 +2261,7 @@ class lessc {
 	// match something without consuming it
 	function peek($regex, &$out = null) {
 		$r = '/'.$regex.'/Ais';
-		$result = preg_match($r, $this->buffer, $out, null, $this->count);
+		$result = preg_match($r, $this->buffer, $out, 0, $this->count);
 		
 		return $result;
 	}
